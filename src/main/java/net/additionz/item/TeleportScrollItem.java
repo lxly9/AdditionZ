@@ -6,7 +6,7 @@ import java.util.Set;
 
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -97,7 +97,8 @@ public class TeleportScrollItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
         tooltip.add(Text.translatable("item.additionz.teleport_scroll.tooltip"));
     }
 

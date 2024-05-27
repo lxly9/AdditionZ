@@ -41,7 +41,7 @@ public class ChunkLoaderBlock extends BlockWithEntity {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (player.getWorld().getBlockEntity(pos) != null && player.getWorld().getBlockEntity(pos) instanceof ChunkLoaderEntity chunkLoaderEntity) {
             if (player.isCreativeLevelTwoOp() || chunkLoaderEntity.getOwner() == null || chunkLoaderEntity.getOwner().equals(player.getUuid())) {
                 if (!world.isClient()) {
@@ -58,7 +58,7 @@ public class ChunkLoaderBlock extends BlockWithEntity {
                 return ActionResult.success(world.isClient());
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override

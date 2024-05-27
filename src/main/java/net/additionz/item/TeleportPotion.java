@@ -33,8 +33,8 @@ public class TeleportPotion extends Item {
             serverPlayerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
             Optional<GlobalPos> optional = serverPlayerEntity.getLastDeathPos();
             if (optional.isPresent()) {
-                serverPlayerEntity.teleport(serverPlayerEntity.getServer().getWorld(optional.get().getDimension()), optional.get().getPos().getX() + 0.5D, optional.get().getPos().getY(),
-                        optional.get().getPos().getZ() + 0.5D, user.getYaw(), user.getPitch());
+                serverPlayerEntity.teleport(serverPlayerEntity.getServer().getWorld(optional.get().dimension()), optional.get().pos().getX() + 0.5D, optional.get().pos().getY(),
+                        optional.get().pos().getZ() + 0.5D, user.getYaw(), user.getPitch());
             }
             stack.decrement(1);
 
