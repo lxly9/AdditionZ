@@ -1,6 +1,7 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed trinket slot positions
+- Fixed creative trinket slot positions
+- Fixed trinket slot backslot compat
 ### Changed:
-- Changed trinket feature option to off by default
+- 

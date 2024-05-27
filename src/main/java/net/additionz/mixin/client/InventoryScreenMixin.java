@@ -35,7 +35,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
     @Inject(method = "drawBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V", shift = Shift.AFTER))
     protected void drawBackgroundMixin(DrawContext context, float delta, int mouseX, int mouseY, CallbackInfo info) {
-        TrinketUtil.renderTrinketSlotsBackground(context, this.client, this.x, this.y, !this.recipeBook.isOpen());
+        TrinketUtil.renderTrinketSlotsBackground(context, this.client, this.x, this.y, !this.recipeBook.isOpen(), 8);
     }
 
 }

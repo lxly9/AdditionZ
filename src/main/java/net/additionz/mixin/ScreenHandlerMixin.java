@@ -45,7 +45,7 @@ public class ScreenHandlerMixin {
                 trinketSlotCount = 0;
             }
 
-            TrinketUtil.setTrinketSlotPosition(slot, trinketSlotCount);
+            TrinketUtil.setTrinketSlotPosition(slot, trinketSlotCount, 8);
 
             this.trinketSlotCount++;
             info.setReturnValue(slot);

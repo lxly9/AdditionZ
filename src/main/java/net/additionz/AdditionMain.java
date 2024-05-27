@@ -98,6 +98,7 @@ public class AdditionMain implements ModInitializer {
     public static final Identifier AGE_INFO = new Identifier("additionz", "age_info");
 
     public static final boolean isLevelzLoaded = FabricLoader.getInstance().isModLoaded("levelz");
+    public static final boolean isBackSlotLoaded = FabricLoader.getInstance().isModLoaded("backslot");
 
     @Override
     public void onInitialize() {

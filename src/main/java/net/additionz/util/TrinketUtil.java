@@ -18,16 +18,16 @@ public class TrinketUtil {
 
     private static final Identifier TEXTURE = new Identifier("additionz", "textures/gui/trinket_slots.png");
 
-    public static void setTrinketSlotPosition(Slot slot, int trinketSlotCount) {
+    public static void setTrinketSlotPosition(Slot slot, int trinketSlotCount, int maxColumn) {
 
-        int rowCount = trinketSlotCount / 8;
-        int rowSlotCount = trinketSlotCount % 8;
+        int rowCount = trinketSlotCount / maxColumn;
+        int rowSlotCount = trinketSlotCount % maxColumn;
 
         ((SlotAccess) slot).setX(-17 - rowCount * 18);
         ((SlotAccess) slot).setY(12 + rowSlotCount * 18);
     }
 
-    public static void renderTrinketSlotsBackground(DrawContext context, MinecraftClient client, int screenX, int screenY, boolean shouldShow) {
+    public static void renderTrinketSlotsBackground(DrawContext context, MinecraftClient client, int screenX, int screenY, boolean shouldShow, int maxColumn) {
         if (AdditionMain.CONFIG.trinket_slot_arrangement && client.player != null && shouldShow) {
             Optional<TrinketComponent> trinkets = TrinketsApi.getTrinketComponent(client.player);
             int trinketSlotCount = 0;
@@ -42,13 +42,13 @@ public class TrinketUtil {
             }
 
             if (trinketSlotCount > 0) {
-                int rowCount = trinketSlotCount / 8 + (trinketSlotCount % 8 == 0 ? 0 : 1);
+                int rowCount = trinketSlotCount / maxColumn + (trinketSlotCount % maxColumn == 0 ? 0 : 1);
                 for (int i = 0; i < rowCount; i++) {
-                    int slotCount = 8;
+                    int slotCount = maxColumn;
                     boolean extra = false;
                     if (rowCount == i + 1) {
-                        slotCount = trinketSlotCount - 8 * i;
-                        if (rowCount != 1 && slotCount != 8) {
+                        slotCount = trinketSlotCount - maxColumn * i;
+                        if (rowCount != 1 && slotCount != maxColumn) {
                             extra = true;
                         }
                     }
