@@ -98,13 +98,12 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
     }
 
     @Inject(method = "initDataTracker", at = @At("TAIL"))
-    protected void initDataTrackerMixin(CallbackInfo info) {
-        this.dataTracker.startTracking(MALE, true);
+    protected void initDataTrackerMixin(DataTracker.Builder builder, CallbackInfo info) {
+        builder.add(MALE, true);
     }
 
     @Inject(method = "initialize", at = @At("RETURN"))
-    private void initializeMixin(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt,
-            CallbackInfoReturnable<EntityData> info) {
+    private void initializeMixin(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, CallbackInfoReturnable<EntityData> info) {
         this.dataTracker.set(MALE, world.getRandom().nextFloat() <= 0.5F);
     }
 
@@ -117,21 +116,12 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
     }
 
     @Override
-    public EntityDimensions getDimensions(EntityPose pose) {
-        return isMaleVillager() ? super.getDimensions(pose) : super.getDimensions(pose).scaled(0.9f);
+    protected EntityDimensions getBaseDimensions(EntityPose pose) {
+        return isMaleVillager() ? super.getBaseDimensions(pose) : super.getBaseDimensions(pose).scaled(0.9f).withEyeHeight(1.55f);
     }
 
     @Shadow
     private void sayNo() {
-    }
-
-    @Override
-    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
-        float multiplier = isMaleVillager() ? 1.0f : 0.9f;
-        if (this.isBaby()) {
-            return 0.81f * multiplier;
-        }
-        return 1.62f * multiplier;
     }
 
     @Override

@@ -10,13 +10,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.additionz.AdditionMain;
+import net.minecraft.block.spawner.MobSpawnerEntry;
+import net.minecraft.block.spawner.MobSpawnerLogic;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.MobSpawnerEntry;
-import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.World;
 
 @Mixin(MobSpawnerLogic.class)
@@ -40,7 +40,7 @@ public class MobSpawnerLogicMixin {
         nbt.putInt("DeactivationTicks", this.deactivationTicks);
     }
 
-    @Inject(method = "serverTick", at = @At(value = "FIELD", target = "Lnet/minecraft/world/MobSpawnerLogic;spawnDelay:I", ordinal = 1))
+    @Inject(method = "serverTick", at = @At(value = "FIELD", target = "Lnet/minecraft/block/spawner/MobSpawnerLogic;spawnDelay:I", ordinal = 1))
     private void serverTickParticleMixin(ServerWorld world, BlockPos pos, CallbackInfo info) {
         if (this.deactivationTicks > 0 && world.getTime() % 3 == 0) {
             world.spawnParticles(ParticleTypes.ELECTRIC_SPARK, pos.getX() + world.getRandom().nextFloat(), pos.getY() + world.getRandom().nextFloat(), pos.getZ() + world.getRandom().nextFloat(), 5,

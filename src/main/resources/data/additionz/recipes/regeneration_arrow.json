@@ -10,12 +10,20 @@
         "item": "minecraft:feather"
     },
     "addition": {
-        "item": "minecraft:potion",
-        "data": "{Potion:\"minecraft:regeneration\"}"
+        "id": "minecraft:potion",
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:regeneration"
+            }
+        }
     },
     "result": {
-        "item": "minecraft:tipped_arrow",
+        "id": "minecraft:tipped_arrow",
         "count": 6,
-        "data": "{Potion:\"minecraft:regeneration\"}"
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:regeneration"
+            }
+        }
     }
 }

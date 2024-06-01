@@ -7,10 +7,12 @@ import net.additionz.block.render.ChunkLoaderRenderer;
 import net.additionz.block.screen.ChunkLoaderScreen;
 import net.additionz.misc.FletchingScreen;
 import net.additionz.network.AdditionClientPacket;
+import net.additionz.network.packet.ExperiencePacket;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ExperienceDroppingBlock;
@@ -85,7 +87,7 @@ public class AdditionClient implements ClientModInitializer {
                                 context.drawTexture(ORE_TEXTURE, (client.getWindow().getScaledWidth() / 2), (client.getWindow().getScaledHeight() / 2) - 16, 0.0F, 0.0F, 16, 16, 16, 16);
                                 context.getMatrices().pop();
                                 if (spyglassUsage == 0) {
-                                    AdditionClientPacket.writeC2SConsumeXpPacket(1);
+                                    ClientPlayNetworking.send(new ExperiencePacket(1));
                                 }
                                 spyglassUsage++;
                                 return true;

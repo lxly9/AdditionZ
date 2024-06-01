@@ -10,12 +10,20 @@
         "item": "minecraft:feather"
     },
     "addition": {
-        "item": "minecraft:potion",
-        "data": "{Potion:\"minecraft:strong_swiftness\"}"
+        "id": "minecraft:potion",
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:strong_swiftness"
+            }
+        }
     },
     "result": {
-        "item": "minecraft:tipped_arrow",
+        "id": "minecraft:tipped_arrow",
         "count": 6,
-        "data": "{Potion:\"minecraft:strong_swiftness\"}"
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:strong_swiftness"
+            }
+        }
     }
 }

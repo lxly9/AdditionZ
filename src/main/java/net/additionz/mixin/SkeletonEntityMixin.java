@@ -1,15 +1,13 @@
 package net.additionz.mixin;
 
-import java.util.UUID;
-
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.additionz.AdditionMain;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.BowItem;
 import net.minecraft.world.World;
 
@@ -21,17 +19,16 @@ public abstract class SkeletonEntityMixin extends AbstractSkeletonEntity {
     }
 
     @Override
-    public void attack(LivingEntity target, float pullProgress) {
-        if (this.getMainHandStack().getItem() instanceof BowItem) {
-            System.out.println(UUID.randomUUID());
+    public void shootAt(LivingEntity target, float pullProgress) {
+        if (this.getMainHandStack().getItem() instanceof BowItem bowItem) {
             if (AdditionMain.CONFIG.skeleton_bow_damaged)
-                this.getMainHandStack().damage(1, this, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
+                this.getMainHandStack().damage(1, this, LivingEntity.getSlotForHand(ProjectileUtil.getHandPossiblyHolding(this, bowItem)));
             if (AdditionMain.CONFIG.break_skeleton_bow_chance > 0.001F && this.getWorld().getRandom().nextFloat() <= AdditionMain.CONFIG.break_skeleton_bow_chance) {
-                this.getMainHandStack().damage(this.getMainHandStack().getMaxDamage(), this, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
+                this.getMainHandStack().damage(this.getMainHandStack().getMaxDamage(), this, LivingEntity.getSlotForHand(ProjectileUtil.getHandPossiblyHolding(this, bowItem)));
                 this.updateAttackType();
             }
         }
-        super.attack(target, pullProgress);
+        super.shootAt(target, pullProgress);
     }
 
 }

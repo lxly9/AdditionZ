@@ -15,10 +15,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.text.Text;
 import java.util.List;
 
-public class FletchingReiCategory implements DisplayCategory<FlecthingReiDisplay> {
+public class FletchingReiCategory implements DisplayCategory<FletchingReiDisplay> {
 
     @Override
-    public CategoryIdentifier<? extends FlecthingReiDisplay> getCategoryIdentifier() {
+    public CategoryIdentifier<? extends FletchingReiDisplay> getCategoryIdentifier() {
         return AdditionzReiPlugin.FLETCHING;
     }
 
@@ -33,7 +33,7 @@ public class FletchingReiCategory implements DisplayCategory<FlecthingReiDisplay
     }
 
     @Override
-    public List<Widget> setupDisplay(FlecthingReiDisplay display, Rectangle bounds) {
+    public List<Widget> setupDisplay(FletchingReiDisplay display, Rectangle bounds) {
         Point startPoint = new Point(bounds.getCenterX() - 58, bounds.getCenterY() - 27);
         List<Widget> widgets = Lists.newArrayList();
         widgets.add(Widgets.createRecipeBase(bounds));

@@ -6,8 +6,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.additionz.AdditionMain;
 import net.additionz.access.ElytraAccess;
-import net.additionz.network.AdditionServerPacket;
+import net.additionz.network.packet.ElytraPacket;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -33,7 +35,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ElytraAc
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V"))
     private void damageElytraDisablingMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-        AdditionServerPacket.writeS2CElytraDisablingPacket((ServerPlayerEntity) (Object) this);
+        ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, new ElytraPacket(AdditionMain.CONFIG.disable_elytra_on_damage_time));
     }
 
     @Inject(method = "tick", at = @At("TAIL"))

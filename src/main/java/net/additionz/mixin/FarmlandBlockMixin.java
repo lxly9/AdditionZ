@@ -15,17 +15,17 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-@SuppressWarnings("deprecation")
 @Mixin(FarmlandBlock.class)
 public abstract class FarmlandBlockMixin extends Block {
 
@@ -42,18 +42,18 @@ public abstract class FarmlandBlockMixin extends Block {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (AdditionMain.CONFIG.shovel_undo_farmland && player.getStackInHand(hand).getItem() instanceof ShovelItem) {
             if (world.getBlockState(pos.up()).isAir() && !FarmlandBlockMixin.hasCrop(world, pos)) {
                 world.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
                 if (!world.isClient()) {
                     FarmlandBlock.setToDirt(player, state, world, pos);
-                    player.getStackInHand(hand).damage(1, player, p -> p.sendToolBreakStatus(hand));
+                    player.getStackInHand(hand).damage(1, player, LivingEntity.getSlotForHand(hand));
                 }
-                return ActionResult.success(world.isClient);
+                return ItemActionResult.success(world.isClient());
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
     }
 
     @Shadow

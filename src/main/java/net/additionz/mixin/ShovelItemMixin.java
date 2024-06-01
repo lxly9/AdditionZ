@@ -10,6 +10,7 @@ import net.additionz.AdditionMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceGateBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.ShovelItem;
@@ -29,12 +30,12 @@ public class ShovelItemMixin {
             BlockState blockState2, BlockState blockState3) {
         if (AdditionMain.CONFIG.path_block_under_gates && world.getBlockState(blockPos.up()).getBlock() instanceof FenceGateBlock) {
             world.playSound(playerEntity, blockPos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0f, 1.0f);
-            if (!world.isClient) {
+            if (!world.isClient()) {
                 blockState3 = blockState2;
                 world.setBlockState(blockPos, blockState3, Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD);
                 world.emitGameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Emitter.of(playerEntity, blockState3));
                 if (playerEntity != null)
-                    context.getStack().damage(1, playerEntity, p -> p.sendToolBreakStatus(context.getHand()));
+                    context.getStack().damage(1, playerEntity, LivingEntity.getSlotForHand(context.getHand()));
             }
             info.setReturnValue(ActionResult.success(world.isClient));
         }

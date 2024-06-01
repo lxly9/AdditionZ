@@ -1,20 +1,15 @@
 package net.additionz.misc;
 
+import net.additionz.AdditionMain;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpyglassItem;
 
 public class EagleEyedEnchantment extends Enchantment {
 
-    public EagleEyedEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot... slotTypes) {
-        super(weight, type, slotTypes);
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 1;
+    public EagleEyedEnchantment() {
+        super(Enchantment.properties(AdditionMain.SPYGLASSES, 5, 1, Enchantment.leveledCost(1, 11), Enchantment.leveledCost(21, 11), 1, EquipmentSlot.MAINHAND));
     }
 
     @Override

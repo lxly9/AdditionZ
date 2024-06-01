@@ -10,12 +10,20 @@
         "item": "minecraft:feather"
     },
     "addition": {
-        "item": "minecraft:potion",
-        "data": "{Potion:\"minecraft:night_vision\"}"
+        "id": "minecraft:potion",
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:night_vision"
+            }
+        }
     },
     "result": {
-        "item": "minecraft:tipped_arrow",
+        "id": "minecraft:tipped_arrow",
         "count": 6,
-        "data": "{Potion:\"minecraft:night_vision\"}"
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:night_vision"
+            }
+        }
     }
 }

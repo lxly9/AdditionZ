@@ -3,9 +3,10 @@ package net.additionz.block.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.additionz.AdditionMain;
-import net.additionz.network.AdditionClientPacket;
+import net.additionz.network.packet.ChunkLoaderPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -43,12 +44,12 @@ public class ChunkLoaderScreen extends HandledScreen<ChunkLoaderScreenHandler> i
                 if (button instanceof ChunkButton chunkButton) {
                     if (chunkButton.enabled) {
                         if (chunkId != 4) {
-                            AdditionClientPacket.writeC2SChunkLoaderPacket(this.handler.getChunkLoaderEntity().getPos(), chunkId, false);
+                            ClientPlayNetworking.send(new ChunkLoaderPacket(this.handler.getChunkLoaderEntity().getPos(), chunkId, false));
                             this.handler.getChunkLoaderEntity().removeChunk(chunkId);
                         }
                     } else if (chunkButton.canActivate) {
                         if (this.handler.getChunkLoaderEntity().getChunkList().size() < this.handler.getChunkLoaderEntity().getMaxChunksLoaded()) {
-                            AdditionClientPacket.writeC2SChunkLoaderPacket(this.handler.getChunkLoaderEntity().getPos(), chunkId, true);
+                            ClientPlayNetworking.send(new ChunkLoaderPacket(this.handler.getChunkLoaderEntity().getPos(), chunkId, true));
                             this.handler.getChunkLoaderEntity().addChunk(chunkId);
                         }
                     }
@@ -98,7 +99,6 @@ public class ChunkLoaderScreen extends HandledScreen<ChunkLoaderScreenHandler> i
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
         super.render(context, mouseX, mouseY, delta);
         if (this.handler.getChunkLoaderEntity().getBurnTime() > 0) {
             float remainingBurn = (float) this.handler.getChunkLoaderEntity().getBurnTime() / (float) AdditionMain.CONFIG.chunk_loader_fuel_time;
@@ -141,7 +141,7 @@ public class ChunkLoaderScreen extends HandledScreen<ChunkLoaderScreenHandler> i
         }
 
         @Override
-        public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+        protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, this.alpha);
             int i = this.getTextureY();
             RenderSystem.enableBlend();

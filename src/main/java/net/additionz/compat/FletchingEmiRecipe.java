@@ -13,15 +13,15 @@ import net.additionz.misc.FletchingScreen;
 import net.minecraft.util.Identifier;
 
 public class FletchingEmiRecipe implements EmiRecipe {
-    private final Identifier id;
+    // private final Identifier id;
     private final List<EmiIngredient> input;
     private final List<EmiStack> output;
 
     public FletchingEmiRecipe(FletchingRecipe recipe) {
-        this.id = recipe.getId();
+        // this.id = recipe.getId();
         this.input = List.of(EmiIngredient.of(recipe.getIngredients().get(0)), EmiIngredient.of(recipe.getIngredients().get(1)), EmiIngredient.of(recipe.getIngredients().get(2)),
                 EmiIngredient.of(recipe.getIngredients().get(3)));
-        this.output = List.of(EmiStack.of(recipe.getOutput(null)));
+        this.output = List.of(EmiStack.of(recipe.getResult(null)));
     }
 
     @Override
@@ -31,7 +31,7 @@ public class FletchingEmiRecipe implements EmiRecipe {
 
     @Override
     public Identifier getId() {
-        return id;
+        return null;
     }
 
     @Override

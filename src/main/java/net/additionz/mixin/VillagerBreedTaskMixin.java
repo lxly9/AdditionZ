@@ -20,7 +20,7 @@ import net.minecraft.entity.passive.VillagerEntity;
 @Mixin(VillagerBreedTask.class)
 public class VillagerBreedTaskMixin {
 
-    @Inject(method = "isReadyToBreed", at = @At(value = "INVOKE", target = "Ljava/util/Optional;isPresent()Z"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    @Inject(method = "isReadyToBreed", at = @At(value = "INVOKE", target = "Ljava/util/Optional;isEmpty()Z"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void isReadyToBreed(VillagerEntity villager, CallbackInfoReturnable<Boolean> info, Brain<VillagerEntity> brain, Optional<PassiveEntity> optional) {
         if (AdditionMain.CONFIG.villager_gender && optional.isPresent() && ((VillagerAccess) villager).isMaleVillager() == ((VillagerAccess) optional.get()).isMaleVillager()) {
             Optional<PassiveEntity> otherOptional = brain.getOptionalRegisteredMemory(MemoryModuleType.BREED_TARGET).filter(passiveEntity -> {

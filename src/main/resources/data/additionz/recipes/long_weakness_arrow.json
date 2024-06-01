@@ -10,12 +10,20 @@
         "item": "minecraft:feather"
     },
     "addition": {
-        "item": "minecraft:potion",
-        "data": "{Potion:\"minecraft:long_weakness\"}"
+        "id": "minecraft:potion",
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:long_weakness"
+            }
+        }
     },
     "result": {
-        "item": "minecraft:tipped_arrow",
+        "id": "minecraft:tipped_arrow",
         "count": 6,
-        "data": "{Potion:\"minecraft:long_weakness\"}"
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:long_weakness"
+            }
+        }
     }
 }

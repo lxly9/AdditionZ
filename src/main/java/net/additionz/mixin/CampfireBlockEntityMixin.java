@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.entity.CampfireBlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -39,12 +40,12 @@ public abstract class CampfireBlockEntityMixin {
     }
 
     @Inject(method = "readNbt", at = @At("TAIL"))
-    private void readNbt(NbtCompound nbt, CallbackInfo info) {
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup, CallbackInfo info) {
         this.rainBurnTime = nbt.getInt("RainBurnTime");
     }
 
     @Inject(method = "writeNbt", at = @At("TAIL"))
-    protected void writeNbtMixin(NbtCompound nbt, CallbackInfo info) {
+    protected void writeNbtMixin(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup, CallbackInfo info) {
         nbt.putInt("RainBurnTime", this.rainBurnTime);
     }
 }

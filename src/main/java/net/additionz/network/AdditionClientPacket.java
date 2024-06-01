@@ -1,6 +1,5 @@
 package net.additionz.network;
 
-import io.netty.buffer.Unpooled;
 import net.additionz.AdditionMain;
 import net.additionz.access.ElytraAccess;
 import net.additionz.network.packet.ElytraPacket;
@@ -9,10 +8,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 
 public class AdditionClientPacket {
 
@@ -35,28 +32,4 @@ public class AdditionClientPacket {
         });
     }
 
-    // public static void writeC2SStampedeDamagePacket(int entityId, int enchantmentLevel, boolean offhand) {
-    //     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-    //     buf.writeInt(entityId);
-    //     buf.writeInt(enchantmentLevel);
-    //     buf.writeBoolean(offhand);
-    //     CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(AdditionServerPacket.STAMPEDE_DAMAGE_PACKET, buf);
-    //     MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
-    // }
-
-    // public static void writeC2SConsumeXpPacket(int amount) {
-    //     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-    //     buf.writeInt(amount);
-    //     CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(AdditionServerPacket.CONSUME_EXPERIENCE_PACKET, buf);
-    //     MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
-    // }
-
-    // public static void writeC2SChunkLoaderPacket(BlockPos pos, int chunkId, boolean enableChunkLoading) {
-    //     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-    //     buf.writeBlockPos(pos);
-    //     buf.writeInt(chunkId);
-    //     buf.writeBoolean(enableChunkLoading);
-    //     CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(AdditionServerPacket.CHUNK_LOADER_PACKET, buf);
-    //     MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
-    // }
 }

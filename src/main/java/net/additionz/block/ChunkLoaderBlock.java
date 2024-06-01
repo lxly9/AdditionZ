@@ -2,6 +2,8 @@ package net.additionz.block;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.MapCodec;
+
 import net.additionz.AdditionMain;
 import net.additionz.block.entity.ChunkLoaderEntity;
 import net.minecraft.block.BlockRenderType;
@@ -15,7 +17,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -23,8 +24,9 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ForcedChunkState;
 import net.minecraft.world.World;
 
-@SuppressWarnings("deprecation")
 public class ChunkLoaderBlock extends BlockWithEntity {
+
+    public static final MapCodec<ChunkLoaderBlock> CODEC = ChunkLoaderBlock.createCodec(ChunkLoaderBlock::new);
 
     public ChunkLoaderBlock(Settings settings) {
         super(settings);
@@ -45,7 +47,7 @@ public class ChunkLoaderBlock extends BlockWithEntity {
         if (player.getWorld().getBlockEntity(pos) != null && player.getWorld().getBlockEntity(pos) instanceof ChunkLoaderEntity chunkLoaderEntity) {
             if (player.isCreativeLevelTwoOp() || chunkLoaderEntity.getOwner() == null || chunkLoaderEntity.getOwner().equals(player.getUuid())) {
                 if (!world.isClient()) {
-                    ForcedChunkState forcedChunkState = ((ServerWorld) world).getPersistentStateManager().get(ForcedChunkState::fromNbt, "chunks");
+                    ForcedChunkState forcedChunkState = ((ServerWorld) world).getPersistentStateManager().get(ForcedChunkState.getPersistentStateType(), "chunks");
                     ChunkPos chunkPos = new ChunkPos(pos);
                     if (forcedChunkState != null && forcedChunkState.getChunks().contains(chunkPos.toLong())) {
                         if (chunkLoaderEntity.getChunkList().size() <= 0 || !ChunkLoaderEntity.isChunkLoadedByChunkLoader(chunkLoaderEntity, chunkPos)) {
@@ -78,7 +80,12 @@ public class ChunkLoaderBlock extends BlockWithEntity {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, AdditionMain.CHUNK_LOADER_ENTITY, world.isClient() ? ChunkLoaderEntity::clientTick : ChunkLoaderEntity::serverTick);
+        return validateTicker(type, AdditionMain.CHUNK_LOADER_ENTITY, world.isClient() ? ChunkLoaderEntity::clientTick : ChunkLoaderEntity::serverTick);
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
     }
 
 }

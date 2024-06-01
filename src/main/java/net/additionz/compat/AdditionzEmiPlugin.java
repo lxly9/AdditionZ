@@ -9,6 +9,7 @@ import net.additionz.AdditionMain;
 import net.additionz.misc.FletchingRecipe;
 import net.additionz.misc.FletchingScreen;
 import net.minecraft.item.Items;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.util.Identifier;
 
@@ -23,8 +24,8 @@ public class AdditionzEmiPlugin implements EmiPlugin {
         emiRegistry.addCategory(FLETCHING_CATEGORY);
         emiRegistry.addWorkstation(FLETCHING_CATEGORY, FLETCHING_TABLE);
         RecipeManager manager = emiRegistry.getRecipeManager();
-        for (FletchingRecipe recipe : manager.listAllOfType(AdditionMain.FLETCHING_RECIPE)) {
-            emiRegistry.addRecipe(new FletchingEmiRecipe(recipe));
+        for (RecipeEntry<FletchingRecipe> recipe : manager.listAllOfType(AdditionMain.FLETCHING_RECIPE)) {
+            emiRegistry.addRecipe(new FletchingEmiRecipe(recipe.value()));
         }
     }
 

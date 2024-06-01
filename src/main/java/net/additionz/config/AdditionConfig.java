@@ -74,7 +74,7 @@ public class AdditionConfig implements ConfigData {
     @Comment("Change slot highlight to texture")
     public boolean change_slot_highlight = false;
     public boolean fletching_table_use = true;
-    public boolean show_nbt_tooltip = false;
+    public boolean show_component_tooltip = false;
     @Comment("Repair trident with prismarine shards")
     public boolean repair_trident = true;
     public boolean show_jukebox_disc = true;

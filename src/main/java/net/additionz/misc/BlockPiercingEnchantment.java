@@ -1,18 +1,13 @@
 package net.additionz.misc;
 
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 
 public class BlockPiercingEnchantment extends Enchantment {
 
-    public BlockPiercingEnchantment(Rarity weight, EnchantmentTarget type, EquipmentSlot... slotTypes) {
-        super(weight, type, slotTypes);
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 3;
+    public BlockPiercingEnchantment() {
+        super(Enchantment.properties(ConventionalItemTags.BOWS_TOOLS, 5, 3, Enchantment.leveledCost(1, 11), Enchantment.leveledCost(21, 11), 1, EquipmentSlot.MAINHAND));
     }
 
 }

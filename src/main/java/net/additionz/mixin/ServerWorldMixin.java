@@ -20,13 +20,11 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.MutableWorldProperties;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.DimensionType;
 
 @Mixin(ServerWorld.class)
@@ -45,11 +43,10 @@ public abstract class ServerWorldMixin extends World implements WorldAccess {
         super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess, maxChainedNeighborUpdates);
     }
 
-    @Inject(method = "tickChunk", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/biome/Biome;canSetSnow(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void tickChunkMixin(WorldChunk chunk, int randomTickSpeed, CallbackInfo info, ChunkPos chunkPos, boolean bl, int i, int j, Profiler profiler, BlockPos blockPos, BlockPos blockPos2,
-            Biome biome) {
+    @Inject(method = "tickIceAndSnow", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/biome/Biome;canSetSnow(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void tickIceAndSnowMixin(BlockPos pos, CallbackInfo info, BlockPos blockPos, BlockPos blockPos2, Biome biome, int i) {
         if (AdditionMain.CONFIG.snow_under_trees && !biome.doesNotSnow(blockPos)) {
-            BlockPos underLeavesBlockPos = this.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, this.getRandomPosInChunk(i, 0, j, 15));
+            BlockPos underLeavesBlockPos = this.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, blockPos);
             if (this.random.nextInt(3) == 0 && biome.canSetSnow(this, underLeavesBlockPos)) {
                 this.setBlockState(underLeavesBlockPos, Blocks.SNOW.getDefaultState());
             }

@@ -48,7 +48,7 @@ public class SpawnHelperMixin {
             } else if (p < spawnEntry.minGroupSize && q == o - 1 && ((WorldAccess) world).getLastSpawnBlockPos() != null) {
                 MobEntity mobEntity2 = SpawnHelperMixin.createMob(world, spawnEntry.type);
                 if (mobEntity2 != null) {
-                    mobEntity2.initialize(world, world.getLocalDifficulty(mobEntity2.getBlockPos()), SpawnReason.NATURAL, entityData, null);
+                    mobEntity2.initialize(world, world.getLocalDifficulty(mobEntity2.getBlockPos()), SpawnReason.NATURAL, entityData);
                     mobEntity2.refreshPositionAndAngles(((WorldAccess) world).getLastSpawnBlockPos(), q, p);
                     world.spawnEntityAndPassengers(mobEntity2);
                 }

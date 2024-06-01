@@ -8,13 +8,13 @@ import com.google.common.collect.Lists;
 
 import net.additionz.AdditionMain;
 import net.additionz.block.entity.ChunkLoaderEntity;
+import net.additionz.network.packet.ChunkLoaderBlockPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
@@ -26,13 +26,13 @@ public class ChunkLoaderScreenHandler extends ScreenHandler {
     private ChunkLoaderEntity chunkLoaderEntity = null;
     private List<Integer> existingForcedChunkIds;
 
-    public ChunkLoaderScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
+    public ChunkLoaderScreenHandler(int syncId, PlayerInventory playerInventory, ChunkLoaderBlockPacket buf) {
         this(syncId, playerInventory, new SimpleInventory(6), ScreenHandlerContext.EMPTY);
-        this.chunkLoaderEntity = (ChunkLoaderEntity) playerInventory.player.getWorld().getBlockEntity(buf.readBlockPos());
-        this.chunkLoaderEntity.setActive(buf.readBoolean());
-        this.chunkLoaderEntity.setBurnTime(buf.readInt());
-        this.chunkLoaderEntity.getChunkList().addAll(buf.readIntList());
-        this.existingForcedChunkIds = Lists.newArrayList(buf.readIntList());
+        this.chunkLoaderEntity = (ChunkLoaderEntity) playerInventory.player.getWorld().getBlockEntity(buf.pos());
+        this.chunkLoaderEntity.setActive(buf.active());
+        this.chunkLoaderEntity.setBurnTime(buf.burnTime());
+        this.chunkLoaderEntity.getChunkList().addAll(buf.chunkList());
+        this.existingForcedChunkIds = Lists.newArrayList(buf.existingForcedChunkIds());
     }
 
     public ChunkLoaderScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context) {

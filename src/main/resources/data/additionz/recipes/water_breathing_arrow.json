@@ -10,12 +10,20 @@
         "item": "minecraft:feather"
     },
     "addition": {
-        "item": "minecraft:potion",
-        "data": "{Potion:\"minecraft:water_breathing\"}"
+        "id": "minecraft:potion",
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:water_breathing"
+            }
+        }
     },
     "result": {
-        "item": "minecraft:tipped_arrow",
+        "id": "minecraft:tipped_arrow",
         "count": 6,
-        "data": "{Potion:\"minecraft:water_breathing\"}"
+        "components": {
+            "minecraft:potion_contents": {
+                "potion": "minecraft:water_breathing"
+            }
+        }
     }
 }

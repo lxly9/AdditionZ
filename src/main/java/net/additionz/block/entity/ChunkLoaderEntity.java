@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.additionz.AdditionMain;
 import net.additionz.block.screen.ChunkLoaderScreenHandler;
+import net.additionz.network.packet.ChunkLoaderBlockPacket;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,8 +23,8 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -35,7 +36,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ForcedChunkState;
 import net.minecraft.world.World;
 
-public class ChunkLoaderEntity extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory {
+public class ChunkLoaderEntity extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory<ChunkLoaderBlockPacket> {
 
     private UUID owner = null;
     private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(6, ItemStack.EMPTY);
@@ -114,33 +115,33 @@ public class ChunkLoaderEntity extends BlockEntity implements Inventory, Extende
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
+    public void readNbt(NbtCompound nbt, WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
         if (nbt.contains("Owner")) {
             this.owner = nbt.getUuid("Owner");
         }
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-        Inventories.readNbt(nbt, this.inventory);
+        Inventories.readNbt(nbt, this.inventory, registryLookup);
         this.active = nbt.getBoolean("Active");
         this.burnTime = nbt.getInt("BurnTime");
         this.chunkList = Arrays.stream(nbt.getIntArray("ChunkList")).boxed().collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
-    public void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
+    public void writeNbt(NbtCompound nbt, WrapperLookup registryLookup) {
+        super.writeNbt(nbt, registryLookup);
         if (this.owner != null) {
             nbt.putUuid("Owner", this.owner);
         }
-        Inventories.writeNbt(nbt, this.inventory);
+        Inventories.writeNbt(nbt, this.inventory, registryLookup);
         nbt.putBoolean("Active", this.active);
         nbt.putInt("BurnTime", this.burnTime);
         nbt.putIntArray("ChunkList", this.chunkList);
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return this.createNbt();
+    public NbtCompound toInitialChunkDataNbt(WrapperLookup registryLookup) {
+        return this.createNbt(registryLookup);
     }
 
     @Nullable
@@ -235,12 +236,7 @@ public class ChunkLoaderEntity extends BlockEntity implements Inventory, Extende
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-        buf.writeBlockPos(this.getPos());
-        buf.writeBoolean(this.active);
-        buf.writeInt(this.burnTime);
-        buf.writeIntList(new IntArrayList(this.chunkList));
-
+    public ChunkLoaderBlockPacket getScreenOpeningData(ServerPlayerEntity player) {
         List<Integer> existingForcedChunkIds = new ArrayList<Integer>();
         for (int i = 0; i < 9; i++) {
             ChunkPos chunkPos = getChunkLoaderChunkPos(pos, i);
@@ -248,7 +244,7 @@ public class ChunkLoaderEntity extends BlockEntity implements Inventory, Extende
                 existingForcedChunkIds.add(i);
             }
         }
-        buf.writeIntList(new IntArrayList(existingForcedChunkIds));
+        return new ChunkLoaderBlockPacket(this.getPos(), this.active, this.burnTime, new IntArrayList(this.chunkList), new IntArrayList(existingForcedChunkIds));
     }
 
     public int getMaxChunksLoaded() {
@@ -341,47 +337,6 @@ public class ChunkLoaderEntity extends BlockEntity implements Inventory, Extende
         return new ChunkPos(x, z);
     }
 
-    // public static ChunkPos getChunkLoaderChunkPos(BlockPos chunkLoaderBlockPos, int chunkId) {
-    // ChunkPos centerChunkpos = new ChunkPos(chunkLoaderBlockPos);
-    // int x = centerChunkpos.x;
-    // int z = centerChunkpos.z;
-    // switch (chunkId) {
-    // case 0:
-    // x -= 1;
-    // z += 1;
-    // break;
-    // case 1:
-    // z += 1;
-    // break;
-    // case 2:
-    // x += 1;
-    // z += 1;
-    // break;
-    // case 3:
-    // x -= 1;
-    // break;
-    // case 4:
-    // break;
-    // case 5:
-    // x += 1;
-    // break;
-    // case 6:
-    // x -= 1;
-    // z -= 1;
-    // break;
-    // case 7:
-    // z -= 1;
-    // break;
-    // case 8:
-    // x += 1;
-    // z -= 1;
-    // break;
-    // default:
-    // break;
-    // }
-    // return new ChunkPos(x, z);
-    // }
-
     public static boolean isChunkLoadedByChunkLoader(ChunkLoaderEntity chunkLoaderEntity, ChunkPos chunkPos) {
         boolean containsChunk = false;
         Iterator<Integer> iterator = chunkLoaderEntity.getChunkList().iterator();
@@ -396,7 +351,7 @@ public class ChunkLoaderEntity extends BlockEntity implements Inventory, Extende
 
     public static boolean isChunkForceLoaded(ServerWorld world, ChunkPos chunkPos) {
         boolean forceLoaded = false;
-        ForcedChunkState forcedChunkState = world.getPersistentStateManager().getOrCreate(ForcedChunkState::fromNbt, ForcedChunkState::new, "chunks");
+        ForcedChunkState forcedChunkState = world.getPersistentStateManager().getOrCreate(ForcedChunkState.getPersistentStateType(), "chunks");
         if (forcedChunkState.getChunks().contains(chunkPos.toLong())) {
             return true;
         }

@@ -12,7 +12,7 @@
         "###"
     ],
     "result": {
-        "item": "additionz:chunk_loader"
+        "id": "additionz:chunk_loader"
     },
     "show_notification": true
 }

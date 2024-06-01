@@ -14,7 +14,6 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -32,11 +31,11 @@ public abstract class CreeperEntityMixin extends HostileEntity {
     }
 
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt) {
-        if (AdditionMain.CONFIG.charged_creeper_spawn_chance > 0.001F && world.getRandom().nextFloat() <= AdditionMain.CONFIG.charged_creeper_spawn_chance)
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData) {
+        if (AdditionMain.CONFIG.charged_creeper_spawn_chance > 0.001F && world.getRandom().nextFloat() <= AdditionMain.CONFIG.charged_creeper_spawn_chance) {
             this.dataTracker.set(CHARGED, true);
-
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        }
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/world/World$ExplosionSourceType;)Lnet/minecraft/world/explosion/Explosion;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)

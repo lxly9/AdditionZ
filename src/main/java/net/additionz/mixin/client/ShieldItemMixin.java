@@ -5,9 +5,10 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.additionz.AdditionMain;
-import net.additionz.network.AdditionClientPacket;
+import net.additionz.network.packet.StampedePacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -31,6 +32,7 @@ public abstract class ShieldItemMixin extends Item {
         super(settings);
     }
 
+    @SuppressWarnings("resource")
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         if (world.isClient && AdditionMain.CONFIG.stampede_enchantment && stack.hasEnchantments() && EnchantmentHelper.getLevel(AdditionMain.STAMPEDE_ENCHANTMENT, stack) > 0) {
@@ -51,7 +53,7 @@ public abstract class ShieldItemMixin extends Item {
                     if (!list.isEmpty()) {
                         for (int i = 0; i < list.size(); i++)
                             if (list.get(i) instanceof LivingEntity) {
-                                AdditionClientPacket.writeC2SStampedeDamagePacket(list.get(i).getId(), EnchantmentHelper.getLevel(AdditionMain.STAMPEDE_ENCHANTMENT, stack), slot == 0);
+                                ClientPlayNetworking.send(new StampedePacket(list.get(i).getId(), EnchantmentHelper.getLevel(AdditionMain.STAMPEDE_ENCHANTMENT, stack), slot == 0));
                                 entity.setVelocity(0.0D, 0.0D, 0.0D);
                                 stampedeCooldown = 109;
                             }

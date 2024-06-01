@@ -15,7 +15,7 @@ import net.minecraft.block.Blocks;
 @Environment(EnvType.CLIENT)
 public class AdditionzReiPlugin implements REIClientPlugin {
 
-    public static final CategoryIdentifier<FlecthingReiDisplay> FLETCHING = CategoryIdentifier.of("minecraft", "plugins/fletching");
+    public static final CategoryIdentifier<FletchingReiDisplay> FLETCHING = CategoryIdentifier.of("minecraft", "plugins/fletching");
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
@@ -25,12 +25,12 @@ public class AdditionzReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        registry.registerRecipeFiller(FletchingRecipe.class, AdditionMain.FLETCHING_RECIPE, FlecthingReiDisplay::new);
-    }
+        registry.registerRecipeFiller(FletchingRecipe.class, AdditionMain.FLETCHING_RECIPE, FletchingReiDisplay::new);
+    }// registry.registerRecipeFiller(SmeltingRecipe.class, RecipeType.SMELTING, DefaultSmeltingDisplay::new);
 
     @Override
     public void registerDisplaySerializer(DisplaySerializerRegistry registry) {
-        registry.register(FLETCHING, FlecthingReiDisplay.serializer());
+        registry.register(FLETCHING, FletchingReiDisplay.serializer());
     }
 
 }

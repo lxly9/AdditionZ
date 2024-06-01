@@ -14,12 +14,14 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
 
     @Inject(method = "getPossibleEntries", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private static void getPossibleEntriesMixin(int power, ItemStack stack, boolean treasureAllowed, CallbackInfoReturnable<List<EnchantmentLevelEntry>> info, List<EnchantmentLevelEntry> list) {
+    private static void getPossibleEntriesMixin(FeatureSet enabledFeatures, int level, ItemStack stack, boolean treasureAllowed, CallbackInfoReturnable<List<EnchantmentLevelEntry>> info,
+            List<EnchantmentLevelEntry> list) {
         if (!(stack.getItem() instanceof ShieldItem)) {
             Iterator<EnchantmentLevelEntry> entryIterator = list.iterator();
             while (entryIterator.hasNext()) {

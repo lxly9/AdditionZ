@@ -1,5 +1,7 @@
 package net.additionz.mixin;
 
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -42,7 +44,8 @@ public interface DegradableMixin {
     }
 
     @Shadow
-    default public void tryDegrade(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    default public Optional<BlockState> tryDegrade(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        return null;
     }
 
 }

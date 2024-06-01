@@ -45,9 +45,9 @@ public class WorldRendererMixin {
     @Final
     private MinecraftClient client;
 
-    @Inject(method = "Lnet/minecraft/client/render/WorldRenderer;renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/util/Identifier;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void renderSkyMixin(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean bl, Runnable runnable, CallbackInfo info,
-            CameraSubmersionType cameraSubmersionType, Vec3d vec3d, float f, float g, float h, BufferBuilder bufferBuilder) {
+    @Inject(method = "Lnet/minecraft/client/render/WorldRenderer;renderSky(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/util/Identifier;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void renderSkyMixin(Matrix4f matrix4f, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean bl, Runnable runnable, CallbackInfo info,
+            CameraSubmersionType cameraSubmersionType, MatrixStack matrices, Vec3d vec3d, float f, float g, float h, BufferBuilder bufferBuilder) {
 
         if (AdditionMain.CONFIG.polar_star) {
             matrices.push();

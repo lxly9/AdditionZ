@@ -35,14 +35,14 @@ public abstract class SpyglassItemMixin extends Item {
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
         super.usageTick(world, user, stack, remainingUseTicks);
 
-        if (world.isClient && user instanceof PlayerEntity player && AdditionMain.CONFIG.eagle_eyed_enchantment && (player.experienceLevel > 0 || player.isCreative()) && stack.hasEnchantments()
+        if (world.isClient() && user instanceof PlayerEntity player && AdditionMain.CONFIG.eagle_eyed_enchantment && (player.experienceLevel > 0 || player.isCreative()) && stack.hasEnchantments()
                 && EnchantmentHelper.getLevel(AdditionMain.EAGLE_EYED_ENCHANTMENT, stack) > 0) {
             HitResult hit = user.raycast(128, 0, false);
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
 
-            if (hit.getType() == HitResult.Type.BLOCK)
-                for (int k = -1; k < 2; k++)
-                    for (int i = -1; i < 2; i++)
+            if (hit.getType() == HitResult.Type.BLOCK) {
+                for (int k = -1; k < 2; k++) {
+                    for (int i = -1; i < 2; i++) {
                         for (int u = -1; u < 2; u++) {
                             BlockPos otherPos = pos.up(k).north(i).east(u);
                             if ((world.getBlockState(otherPos).getBlock() instanceof ExperienceDroppingBlock || world.getBlockState(otherPos).getBlock() instanceof RedstoneBlock
@@ -52,6 +52,9 @@ public abstract class SpyglassItemMixin extends Item {
                                 }
                             }
                         }
+                    }
+                }
+            }
         }
     }
 

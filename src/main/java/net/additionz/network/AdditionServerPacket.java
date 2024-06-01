@@ -1,21 +1,16 @@
 package net.additionz.network;
 
-import io.netty.buffer.Unpooled;
-import net.additionz.AdditionMain;
-import net.additionz.access.ElytraAccess;
 import net.additionz.block.entity.ChunkLoaderEntity;
+import net.additionz.network.packet.ChunkLoaderBlockPacket;
 import net.additionz.network.packet.ChunkLoaderPacket;
+import net.additionz.network.packet.ElytraPacket;
 import net.additionz.network.packet.ExperiencePacket;
 import net.additionz.network.packet.StampedePacket;
+import net.additionz.network.packet.TotemPacket;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.SkeletonEntity;
-import net.minecraft.item.Items;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -29,10 +24,13 @@ public class AdditionServerPacket {
     public static final Identifier CHUNK_LOADER_PACKET = new Identifier("additionz", "chunk_loader");
 
     public static void init() {
-        // PayloadTypeRegistry.playS2C().register(TravelerPacket.PACKET_ID, TravelerPacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(StampedePacket.PACKET_ID, StampedePacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(ExperiencePacket.PACKET_ID, ExperiencePacket.PACKET_CODEC);
         PayloadTypeRegistry.playC2S().register(ChunkLoaderPacket.PACKET_ID, ChunkLoaderPacket.PACKET_CODEC);
+
+        PayloadTypeRegistry.playS2C().register(TotemPacket.PACKET_ID, TotemPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(ElytraPacket.PACKET_ID, ElytraPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(ChunkLoaderBlockPacket.PACKET_ID, ChunkLoaderBlockPacket.PACKET_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(StampedePacket.PACKET_ID, (payload, context) -> {
             int entityId = payload.entityId();
@@ -81,23 +79,4 @@ public class AdditionServerPacket {
             });
         });
     }
-
-    // public static void writeS2CTotemOfNonBreakingPacket(ServerPlayerEntity serverPlayerEntity) {
-    //     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-    //     CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(TOTEM_OF_NON_BREAKING_PACKET, buf);
-    //     serverPlayerEntity.networkHandler.sendPacket(packet);
-    // }
-
-    // public static void writeS2CElytraDisablingPacket(ServerPlayerEntity serverPlayerEntity) {
-    //     if (AdditionMain.CONFIG.disable_elytra_on_damage_time > 0) {
-    //         serverPlayerEntity.getItemCooldownManager().set(Items.ELYTRA, AdditionMain.CONFIG.disable_elytra_on_damage_time);
-    //         ((ElytraAccess) serverPlayerEntity).setElytraDisablingTime(AdditionMain.CONFIG.disable_elytra_on_damage_time);
-    //         serverPlayerEntity.stopFallFlying();
-
-    //         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-    //         buf.writeInt(AdditionMain.CONFIG.disable_elytra_on_damage_time);
-    //         CustomPayloadS2CPacket packet = new CustomPayloadS2CPacket(ELYTRA_DISABLING_PACKET, buf);
-    //         serverPlayerEntity.networkHandler.sendPacket(packet);
-    //     }
-    // }
 }

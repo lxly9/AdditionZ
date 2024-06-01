@@ -18,6 +18,7 @@ import net.additionz.AdditionMain;
 import net.additionz.access.AttackTimeAccess;
 import net.additionz.access.PassiveAgeAccess;
 import net.additionz.mixin.accessor.MobEntityAccess;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -34,8 +35,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextParameterSet;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -82,7 +83,7 @@ public abstract class LivingEntityMixin extends Entity implements AttackTimeAcce
                 if (this.getWorld().getBlockState(this.getVelocityAffectingPos()).isIn(AdditionMain.PATH_BLOCKS)) {
                     if (entityAttributeInstance.getModifier(PATH_BOOST_ID) == null) {
                         entityAttributeInstance.addTemporaryModifier(
-                                new EntityAttributeModifier(PATH_BOOST_ID, "Path speed boost", (double) AdditionMain.CONFIG.path_block_speed_boost, EntityAttributeModifier.Operation.ADDITION));
+                                new EntityAttributeModifier(PATH_BOOST_ID, "Path speed boost", (double) AdditionMain.CONFIG.path_block_speed_boost, EntityAttributeModifier.Operation.ADD_VALUE));
                     }
                 } else {
                     if (entityAttributeInstance.getModifier(PATH_BOOST_ID) != null) {
@@ -94,7 +95,7 @@ public abstract class LivingEntityMixin extends Entity implements AttackTimeAcce
     }
 
     @Inject(method = "dropLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/LootTable;generateLoot(Lnet/minecraft/loot/context/LootContextParameterSet;JLjava/util/function/Consumer;)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
-    protected void dropLootMixin(DamageSource source, boolean causedByPlayer, CallbackInfo info, Identifier identifier, LootTable lootTable, LootContextParameterSet.Builder builder,
+    protected void dropLootMixin(DamageSource source, boolean causedByPlayer, CallbackInfo info, RegistryKey<LootTable> registryKey, LootTable lootTable, LootContextParameterSet.Builder builder,
             LootContextParameterSet lootContextParameterSet) {
         if (AdditionMain.CONFIG.passive_entity_modifications && (Object) this instanceof PassiveEntity) {
 
@@ -116,7 +117,8 @@ public abstract class LivingEntityMixin extends Entity implements AttackTimeAcce
                 if (itemStack.getCount() == 0) {
                     continue;
                 }
-                if (itemStack.isFood() || itemStack.isIn(AdditionMain.PASSIVE_AGE_ITEMS)) {
+
+                if (itemStack.get(DataComponentTypes.FOOD) != null || itemStack.isIn(AdditionMain.PASSIVE_AGE_ITEMS)) {
                     itemStack.setCount(1 + (lootingChance > 0.001F ? (this.getWorld().getRandom().nextFloat() <= lootingChance ? 1 : 0) : 0));
                 }
                 this.dropStack(itemStack);

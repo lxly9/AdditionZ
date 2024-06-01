@@ -9,6 +9,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
@@ -22,8 +23,7 @@ public class FletchingScreenHandler extends ScreenHandler {
 
     private final World world;
     @Nullable
-    private FletchingRecipe currentRecipe;
-    // private final List<FletchingRecipe> recipes;
+    private RecipeEntry<FletchingRecipe> currentRecipe;
 
     protected final CraftingResultInventory output = new CraftingResultInventory();
     protected final Inventory input = new SimpleInventory(4) {
@@ -90,11 +90,11 @@ public class FletchingScreenHandler extends ScreenHandler {
     }
 
     private boolean canTakeOutput(PlayerEntity player, boolean present) {
-        return this.currentRecipe != null && this.currentRecipe.matches(this.input, this.world);
+        return this.currentRecipe != null && this.currentRecipe.value().matches(this.input, this.world);
     }
 
     private void onTakeOutput(PlayerEntity player, ItemStack stack) {
-        stack.onCraft(player.getWorld(), player, stack.getCount());
+        stack.onCraftByPlayer(world, player, stack.getCount());
 
         this.output.unlockLastRecipe(player, List.of(this.input.getStack(0), this.input.getStack(1), this.input.getStack(2), this.input.getStack(3)));
         for (int i = 0; i < 4; i++) {
@@ -110,21 +110,23 @@ public class FletchingScreenHandler extends ScreenHandler {
     }
 
     private void updateResult() {
-        List<FletchingRecipe> list = this.world.getRecipeManager().getAllMatches(AdditionMain.FLETCHING_RECIPE, this.input, this.world);
+        List<RecipeEntry<FletchingRecipe>> list = this.world.getRecipeManager().getAllMatches(AdditionMain.FLETCHING_RECIPE, this.input, this.world);
+
         if (list.isEmpty()) {
             this.output.setStack(0, ItemStack.EMPTY);
         } else {
             boolean hasAddition = false;
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).hasAddition()) {
+                if (list.get(i).value().hasAddition()) {
                     this.currentRecipe = list.get(i);
                     hasAddition = true;
                     break;
                 }
             }
-            if (!hasAddition)
+            if (!hasAddition) {
                 this.currentRecipe = list.get(0);
-            ItemStack itemStack = this.currentRecipe.craft(this.input, this.world.getRegistryManager());
+            }
+            ItemStack itemStack = this.currentRecipe.value().craft(this.input, this.world.getRegistryManager());
             this.output.setLastRecipe(this.currentRecipe);
             this.output.setStack(0, itemStack);
         }
