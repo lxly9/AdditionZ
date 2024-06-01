@@ -61,11 +61,15 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
     private void setSelectedTabMixin(ItemGroup itemGroup, CallbackInfo info) {
         if (AdditionMain.CONFIG.trinket_slot_arrangement) {
             TrinketPlayerScreenHandler handler = trinkets$getHandler();
+
+            // System.out.println(this.handler.slots);
+
             for (int i = handler.trinkets$getTrinketSlotStart() + (AdditionMain.isBackSlotLoaded ? -2 : 0); i < handler.trinkets$getTrinketSlotEnd() + (AdditionMain.isBackSlotLoaded ? -2 : 0); i++) {
+
+                if (this.handler.slots.size() <= i) {
+                    continue;
+                }
                 Slot slot = this.handler.slots.get(i);
-                // if (i == handler.trinkets$getTrinketSlotEnd() - 5) {
-                // System.out.println(this.handler.slots + " : " + this.handler.slots.size() + ":" + handler.trinkets$getTrinketSlotStart() + ":" + handler.trinkets$getTrinketSlotEnd());
-                // }
 
                 if (slot instanceof CreativeTrinketSlot) {
                     int slotCount = i - (handler.trinkets$getTrinketSlotStart() + (AdditionMain.isBackSlotLoaded ? -2 : 0));
