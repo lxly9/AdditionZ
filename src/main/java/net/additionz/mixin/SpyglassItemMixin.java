@@ -6,14 +6,13 @@ import net.additionz.AdditionMain;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.block.RedstoneBlock;
-import net.minecraft.client.util.ParticleUtil;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpyglassItem;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.ParticleUtil;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +35,7 @@ public abstract class SpyglassItemMixin extends Item {
         super.usageTick(world, user, stack, remainingUseTicks);
 
         if (world.isClient() && user instanceof PlayerEntity player && AdditionMain.CONFIG.eagle_eyed_enchantment && (player.experienceLevel > 0 || player.isCreative()) && stack.hasEnchantments()
-                && EnchantmentHelper.getLevel(AdditionMain.EAGLE_EYED_ENCHANTMENT, stack) > 0) {
+                && stack.getEnchantments().getEnchantments().stream().anyMatch(entry -> entry.matchesId(AdditionMain.EAGLE_EYED_ENCHANTMENT.getRegistry()))) {
             HitResult hit = user.raycast(128, 0, false);
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
 

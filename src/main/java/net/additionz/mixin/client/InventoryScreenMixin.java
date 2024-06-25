@@ -27,7 +27,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
     @Final
     private RecipeBookWidget recipeBook;
     @Unique
-    private static final Identifier TEXTURE = new Identifier("additionz", "textures/gui/trinket_slots.png");
+    private static final Identifier TEXTURE = Identifier.of("additionz", "textures/gui/trinket_slots.png");
 
     public InventoryScreenMixin(PlayerScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
         super(screenHandler, playerInventory, text);

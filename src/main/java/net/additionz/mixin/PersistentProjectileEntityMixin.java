@@ -2,7 +2,9 @@ package net.additionz.mixin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -11,12 +13,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.additionz.AdditionMain;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -36,10 +40,16 @@ public abstract class PersistentProjectileEntityMixin {
     private boolean isPearcing = true;
     @Unique
     private List<BlockPos> piercedBlockPosList = new ArrayList<BlockPos>();
+//Lnet/minecraft/entity/projectile/PersistentProjectileEntity;<init>(Lnet/minecraft/entity/EntityType;DDDLnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)V
+    @Inject(method = "Lnet/minecraft/entity/projectile/PersistentProjectileEntity;<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)V", at = @At("TAIL"))
+    protected void PersistentProjectileEntityInitMixin(EntityType<? extends PersistentProjectileEntity> type, LivingEntity owner, World world, ItemStack stack, @Nullable ItemStack shotFrom,
+            CallbackInfo info) {
 
-    @Inject(method = "Lnet/minecraft/entity/projectile/PersistentProjectileEntity;<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)V", at = @At("TAIL"))
-    protected void PersistentProjectileEntityInitMixin(EntityType<? extends PersistentProjectileEntity> type, LivingEntity owner, World world, ItemStack stack, CallbackInfo info) {
-        this.blockPierceLevel = EnchantmentHelper.getEquipmentLevel(AdditionMain.BLOCK_PIERCE_ENCHANTMENT, owner);
+        Optional<RegistryEntry<Enchantment>> optional = stack.getEnchantments().getEnchantments().stream().filter(entry -> entry.matchesId(AdditionMain.BLOCK_PIERCE_ENCHANTMENT.getRegistry()))
+                .findFirst();
+        if (optional.isPresent() && !optional.isEmpty()) {
+            this.blockPierceLevel = EnchantmentHelper.getLevel(optional.get(), stack);
+        }
         if (this.blockPierceLevel == 0) {
             this.isPearcing = false;
         }
@@ -56,10 +66,12 @@ public abstract class PersistentProjectileEntityMixin {
         this.blockPierceLevel = nbt.getInt("BlockPierceLevel");
         int piercedBlockCount = nbt.getInt("PiercedBlockCount");
         this.piercedBlockPosList = new ArrayList<BlockPos>();
-        for (int i = 0; i < piercedBlockCount; i++)
+        for (int i = 0; i < piercedBlockCount; i++) {
             this.piercedBlockPosList.add(new BlockPos(0, i, 0));
-        if (blockPierceLevel <= piercedBlockCount || blockPierceLevel == 0)
+        }
+        if (blockPierceLevel <= piercedBlockCount || blockPierceLevel == 0) {
             this.isPearcing = false;
+        }
 
     }
 
@@ -92,7 +104,6 @@ public abstract class PersistentProjectileEntityMixin {
             }
 
             if (this.piercedBlockPosList.size() >= this.blockPierceLevel + 1) {
-                // System.out.println("CHECK: " + ((PersistentProjectileEntity) (Object) this).getPos() + " : " + ((PersistentProjectileEntity) (Object) this).world.getTime());
                 this.isPearcing = false;
             } else if (this.inGround)
                 this.inGround = false;
@@ -101,12 +112,15 @@ public abstract class PersistentProjectileEntityMixin {
     }
 
     // Not called when shooting arrow
-    @Inject(method = "applyEnchantmentEffects", at = @At("HEAD"), cancellable = true)
-    private void applyEnchantmentEffectsMixin(LivingEntity entity, float damageModifier, CallbackInfo info) {
-        this.blockPierceLevel = EnchantmentHelper.getEquipmentLevel(AdditionMain.BLOCK_PIERCE_ENCHANTMENT, entity);
-        if (this.blockPierceLevel == 0)
-            this.isPearcing = false;
-    }
+    // @Inject(method = "applyEnchantmentEffects", at = @At("HEAD"), cancellable = true)
+    // private void applyEnchantmentEffectsMixin(LivingEntity entity, float damageModifier, CallbackInfo info) {
+    // Optional<RegistryEntry<Enchantment>> optional = entity.getActiveItem().getEnchantments().getEnchantments().stream()
+    // .filter(entry -> entry.matchesId(AdditionMain.BLOCK_PIERCE_ENCHANTMENT.getRegistry())).findFirst();
+    // if (optional.isPresent() && !optional.isEmpty()) {
+    // if (this.blockPierceLevel == EnchantmentHelper.getLevel(optional.get(), entity.getActiveItem()))
+    // this.isPearcing = false;
+    // }
+    // }
 
     // private void checkFutureBlocks(Vec3d pos, Vec3d futurePos, int distance) {
     // BlockPos oldPos = null;

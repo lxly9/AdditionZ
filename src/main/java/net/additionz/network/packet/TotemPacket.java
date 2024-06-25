@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 
 public record TotemPacket() implements CustomPayload {
 
-    public static final CustomPayload.Id<TotemPacket> PACKET_ID = new CustomPayload.Id<>(new Identifier("additionz", "totem_packet"));
+    public static final CustomPayload.Id<TotemPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of("additionz", "totem_packet"));
 
     public static final PacketCodec<RegistryByteBuf, TotemPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
     }, buf -> new TotemPacket());

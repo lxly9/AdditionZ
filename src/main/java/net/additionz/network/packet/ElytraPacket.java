@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 
 public record ElytraPacket(int disableElytraTime) implements CustomPayload {
 
-    public static final CustomPayload.Id<ElytraPacket> PACKET_ID = new CustomPayload.Id<>(new Identifier("additionz", "elytra_packet"));
+    public static final CustomPayload.Id<ElytraPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of("additionz", "elytra_packet"));
 
     public static final PacketCodec<RegistryByteBuf, ElytraPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
         buf.writeInt(value.disableElytraTime);

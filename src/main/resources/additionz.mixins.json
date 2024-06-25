@@ -47,6 +47,7 @@
     "AnimalEntityMixin",
     "SpawnHelperMixin",
     "ScreenHandlerMixin",
+    "EnchantmentsMixin",
     "accessor.MobEntityAccess",
     "accessor.SlotAccess"
   ],

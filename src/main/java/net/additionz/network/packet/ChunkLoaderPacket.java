@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 
 public record ChunkLoaderPacket(BlockPos pos, int chunkId, boolean enableChunkLoading) implements CustomPayload {
 
-    public static final CustomPayload.Id<ChunkLoaderPacket> PACKET_ID = new CustomPayload.Id<>(new Identifier("additionz", "chunk_loader_packet"));
+    public static final CustomPayload.Id<ChunkLoaderPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of("additionz", "chunk_loader_packet"));
 
     public static final PacketCodec<RegistryByteBuf, ChunkLoaderPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
         buf.writeBlockPos(value.pos);

@@ -10,9 +10,9 @@ import net.additionz.AdditionMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FarmlandBlock;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,8 @@ public abstract class FarmlandBlockMixin extends Block {
 
     @Inject(method = "onLandedUpon", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FarmlandBlock;setToDirt(Lnet/minecraft/entity/Entity;Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V"), cancellable = true)
     private void onLandedUponMixin(World world, BlockState state, BlockPos pos, Entity entity, float fallDistance, CallbackInfo info) {
-        if (AdditionMain.CONFIG.feather_falling_trample && EnchantmentHelper.getEquipmentLevel(Enchantments.FEATHER_FALLING, (LivingEntity) entity) > 0) {
+        if (AdditionMain.CONFIG.feather_falling_trample && ((LivingEntity) entity).getEquippedStack(EquipmentSlot.FEET).getEnchantments().getEnchantments().stream()
+                .anyMatch(entry -> entry.matchesId(Enchantments.FEATHER_FALLING.getRegistry()))) {
             super.onLandedUpon(world, state, pos, entity, fallDistance);
             info.cancel();
         }

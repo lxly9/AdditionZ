@@ -23,7 +23,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -32,8 +31,8 @@ import net.minecraft.util.math.BlockPos;
 @Environment(EnvType.CLIENT)
 public class AdditionClient implements ClientModInitializer {
 
-    private static final Identifier ORE_TEXTURE = new Identifier("additionz:textures/gui/ore_icon.png");
-    private static final Identifier TELEPORT_BARS_TEXTURE = new Identifier("additionz:textures/gui/teleport_bars.png");
+    private static final Identifier ORE_TEXTURE = Identifier.of("additionz:textures/gui/ore_icon.png");
+    private static final Identifier TELEPORT_BARS_TEXTURE = Identifier.of("additionz:textures/gui/teleport_bars.png");
 
     private static int spyglassUsage = 0;
 
@@ -70,7 +69,8 @@ public class AdditionClient implements ClientModInitializer {
 
     private static boolean renderOreIcon(DrawContext context, MinecraftClient client) {
         if (AdditionMain.CONFIG.eagle_eyed_enchantment && client.player.isUsingSpyglass() && (client.player.experienceLevel > 0 || client.player.isCreative())
-                && client.player.getActiveItem().hasEnchantments() && EnchantmentHelper.getLevel(AdditionMain.EAGLE_EYED_ENCHANTMENT, client.player.getActiveItem()) > 0) {
+                && client.player.getActiveItem().hasEnchantments()
+                && client.player.getActiveItem().getEnchantments().getEnchantments().stream().anyMatch(entry -> entry.matchesId(AdditionMain.EAGLE_EYED_ENCHANTMENT.getRegistry()))) {
             HitResult hit = client.player.raycast(128, 0, false);
             BlockPos pos = ((BlockHitResult) hit).getBlockPos();
             if (hit.getType() == HitResult.Type.BLOCK) {

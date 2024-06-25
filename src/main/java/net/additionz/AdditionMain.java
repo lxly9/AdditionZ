@@ -52,6 +52,7 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.ResourceType;
@@ -74,15 +75,20 @@ public class AdditionMain implements ModInitializer {
 
     public static final Map<EntityType<?>, Integer> ENTITY_EXPERIENCE_MAP = new HashMap<EntityType<?>, Integer>();
 
-    public static final TagKey<Block> PATH_BLOCKS = TagKey.of(RegistryKeys.BLOCK, new Identifier("additionz", "path_blocks"));
-    public static final TagKey<Item> PASSIVE_AGE_ITEMS = TagKey.of(RegistryKeys.ITEM, new Identifier("additionz", "passive_age_items"));
-    public static final TagKey<Item> SPYGLASSES = TagKey.of(RegistryKeys.ITEM, new Identifier("minecraft", "spyglasses"));
+    public static final TagKey<Block> PATH_BLOCKS = TagKey.of(RegistryKeys.BLOCK, Identifier.of("additionz", "path_blocks"));
+    public static final TagKey<Item> PASSIVE_AGE_ITEMS = TagKey.of(RegistryKeys.ITEM, Identifier.of("additionz", "passive_age_items"));
+    public static final TagKey<Item> SPYGLASSES = TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "spyglasses"));
 
-    public static final Enchantment BLOCK_PIERCE_ENCHANTMENT = new BlockPiercingEnchantment();
-    public static final Enchantment STAMPEDE_ENCHANTMENT = new StampedeEnchantment();
-    public static final Enchantment EAGLE_EYED_ENCHANTMENT = new EagleEyedEnchantment();
-    public static final Enchantment INACCURACY_CURSE_ENCHANTMENT = new InaccuracyCurseEnchantment();
-    public static final Enchantment DEXTERITY_ENCHANTMENT = new DexterityEnchantment();
+    public static final RegistryKey<Enchantment> BLOCK_PIERCE_ENCHANTMENT = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("additionz", "block_piercing"));
+    // new BlockPiercingEnchantment();
+    public static final RegistryKey<Enchantment> STAMPEDE_ENCHANTMENT = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("additionz", "stampede"));
+    // new StampedeEnchantment();
+    public static final RegistryKey<Enchantment> EAGLE_EYED_ENCHANTMENT = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("additionz", "eagle_eyed"));
+    // new EagleEyedEnchantment();
+    public static final RegistryKey<Enchantment> INACCURACY_CURSE_ENCHANTMENT = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("additionz", "inaccuracy_curse"));
+    // new InaccuracyCurseEnchantment();
+    public static final RegistryKey<Enchantment> DEXTERITY_ENCHANTMENT = RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("additionz", "dexterity"));
+    // new DexterityEnchantment();
 
     public static final Item TOTEM_OF_NON_BREAKING = new Item(new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON));
     public static final Item TELEPORT_SCROLL = new TeleportScrollItem(new Item.Settings().maxCount(16));
@@ -99,14 +105,10 @@ public class AdditionMain implements ModInitializer {
     public static final RecipeSerializer<FletchingRecipe> FLETCHING_SERIALIZER = RecipeSerializer.register("fletching", new FletchingRecipe.Serializer());
     public static ScreenHandlerType<FletchingScreenHandler> FLETCHING = new ScreenHandlerType<>(FletchingScreenHandler::new, FeatureFlags.VANILLA_FEATURES);
 
-    public static final Identifier AGE_INFO = new Identifier("additionz", "age_info");
+    public static final Identifier AGE_INFO = Identifier.of("additionz", "age_info");
 
     public static final boolean isLevelzLoaded = FabricLoader.getInstance().isModLoaded("levelz");
     public static final boolean isBackSlotLoaded = FabricLoader.getInstance().isModLoaded("backslot");
-
-    // Todo:
-    // ItemStackMixin
-    // BeaconMixin
 
     @Override
     public void onInitialize() {
@@ -116,11 +118,12 @@ public class AdditionMain implements ModInitializer {
         CONFIG = AutoConfig.getConfigHolder(AdditionConfig.class).getConfig();
 
         // Registries
-        Registry.register(Registries.ENCHANTMENT, "additionz:block_piercing", BLOCK_PIERCE_ENCHANTMENT);
-        Registry.register(Registries.ENCHANTMENT, "additionz:stampede", STAMPEDE_ENCHANTMENT);
-        Registry.register(Registries.ENCHANTMENT, "additionz:eagle_eyed", EAGLE_EYED_ENCHANTMENT);
-        Registry.register(Registries.ENCHANTMENT, "additionz:inaccuracy_curse", INACCURACY_CURSE_ENCHANTMENT);
-        Registry.register(Registries.ENCHANTMENT, "additionz:dexterity", DEXTERITY_ENCHANTMENT);
+        // Enchantments
+        // Registry.register(Registries.ENCHANTMENT, "additionz:block_piercing", BLOCK_PIERCE_ENCHANTMENT);
+        // Registry.register(Registries.ENCHANTMENT, "additionz:stampede", STAMPEDE_ENCHANTMENT);
+        // Registry.register(Registries.ENCHANTMENT, "additionz:eagle_eyed", EAGLE_EYED_ENCHANTMENT);
+        // Registry.register(Registries.ENCHANTMENT, "additionz:inaccuracy_curse", INACCURACY_CURSE_ENCHANTMENT);
+        // Registry.register(Registries.ENCHANTMENT, "additionz:dexterity", DEXTERITY_ENCHANTMENT);
 
         // Has to get registered
         Registry.register(Registries.ITEM, "additionz:totem_of_non_breaking", TOTEM_OF_NON_BREAKING);

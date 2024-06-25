@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class TrinketUtil {
 
-    private static final Identifier TEXTURE = new Identifier("additionz", "textures/gui/trinket_slots.png");
+    private static final Identifier TEXTURE = Identifier.of("additionz", "textures/gui/trinket_slots.png");
 
     public static void setTrinketSlotPosition(Slot slot, int trinketSlotCount, int maxColumn) {
 

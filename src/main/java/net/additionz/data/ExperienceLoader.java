@@ -22,7 +22,7 @@ public class ExperienceLoader implements SimpleSynchronousResourceReloadListener
 
     @Override
     public Identifier getFabricId() {
-        return new Identifier("additionz", "experience_loader");
+        return Identifier.of("additionz", "experience_loader");
     }
 
     @Override
@@ -36,11 +36,11 @@ public class ExperienceLoader implements SimpleSynchronousResourceReloadListener
                 Iterator<String> iterator = data.keySet().iterator();
                 while (iterator.hasNext()) {
                     String entityType = iterator.next();
-                    if (Registries.ENTITY_TYPE.get(new Identifier(entityType)).toString().equals("entity.minecraft.pig")) {
+                    if (Registries.ENTITY_TYPE.get(Identifier.of(entityType)).toString().equals("entity.minecraft.pig")) {
                         LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), entityType);
                         continue;
                     }
-                    AdditionMain.ENTITY_EXPERIENCE_MAP.put(Registries.ENTITY_TYPE.get(new Identifier(entityType)), data.get(entityType).getAsInt());
+                    AdditionMain.ENTITY_EXPERIENCE_MAP.put(Registries.ENTITY_TYPE.get(Identifier.of(entityType)), data.get(entityType).getAsInt());
 
                 }
             } catch (Exception e) {

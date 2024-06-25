@@ -1,19 +1,16 @@
 package net.additionz.item;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -21,8 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 public class TeleportScrollItem extends Item {
@@ -41,7 +37,7 @@ public class TeleportScrollItem extends Item {
     @Override
     public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
         if (world.isClient()) {
-            MinecraftClient.getInstance().getSoundManager().stopSounds(new Identifier("minecraft:block.beacon.ambient"), null);
+            MinecraftClient.getInstance().getSoundManager().stopSounds(Identifier.of("minecraft:block.beacon.ambient"), null);
         }
     }
 
@@ -54,21 +50,9 @@ public class TeleportScrollItem extends Item {
             world.playSound(null, user.getBlockPos(), SoundEvents.BLOCK_BEACON_AMBIENT, SoundCategory.PLAYERS, 1.0f, 1.0f);
         }
         if (remainingUseTicks <= 1) {
-            if (!world.isClient() && user instanceof ServerPlayerEntity) {
-                BlockPos blockPos = ((ServerPlayerEntity) user).getSpawnPointPosition();
-                ServerWorld serverWorld = ((ServerPlayerEntity) user).getServer().getWorld(((ServerPlayerEntity) user).getSpawnPointDimension());
-                if (blockPos != null) {
-                    Optional<Vec3d> optional = serverWorld != null && blockPos != null ? PlayerEntity.findRespawnPosition(serverWorld, blockPos, user.getYaw(), true, true) : Optional.empty();
-                    ServerWorld serverWorld2 = serverWorld != null && optional.isPresent() ? serverWorld : ((ServerPlayerEntity) user).getServer().getOverworld();
-                    if (optional.isPresent()) {
-                        ((ServerPlayerEntity) user).teleport(serverWorld2, optional.get().getX(), optional.get().getY(), optional.get().getZ(), user.getYaw(), user.getPitch());
-                    } else {
-                        user.sendMessage(Text.of("Could not find world spawn!"));
-                    }
-                } else {
-                    user.teleport(serverWorld, serverWorld.getSpawnPos().getX() + 0.5D, serverWorld.getSpawnPos().getY(), serverWorld.getSpawnPos().getZ() + 0.5, Set.of(), user.getYaw(),
-                            user.getPitch());
-                }
+            if (!world.isClient() && user instanceof ServerPlayerEntity serverPlayerEntity) {
+                TeleportTarget teleportTarget = serverPlayerEntity.getRespawnTarget(true, TeleportTarget.NO_OP);
+                serverPlayerEntity.teleport(teleportTarget.world(), teleportTarget.pos().getX(), teleportTarget.pos().getY(), teleportTarget.pos().getZ(), user.getYaw(), user.getPitch());
             } else {
                 world.playSound(null, user.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS);
             }
@@ -92,7 +76,7 @@ public class TeleportScrollItem extends Item {
     }
 
     @Override
-    public int getMaxUseTime(ItemStack stack) {
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 200;
     }
 

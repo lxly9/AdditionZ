@@ -11,17 +11,10 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 public class AdditionServerPacket {
-
-    public static final Identifier STAMPEDE_DAMAGE_PACKET = new Identifier("additionz", "stampede_damage");
-    public static final Identifier TOTEM_OF_NON_BREAKING_PACKET = new Identifier("additionz", "totem_of_non_breaking");
-    public static final Identifier CONSUME_EXPERIENCE_PACKET = new Identifier("additionz", "consume_experience");
-    public static final Identifier ELYTRA_DISABLING_PACKET = new Identifier("additionz", "elytra_disabling");
-    public static final Identifier CHUNK_LOADER_PACKET = new Identifier("additionz", "chunk_loader");
 
     public static void init() {
         PayloadTypeRegistry.playC2S().register(StampedePacket.PACKET_ID, StampedePacket.PACKET_CODEC);

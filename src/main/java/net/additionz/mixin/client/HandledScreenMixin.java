@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 @Mixin(HandledScreen.class)
 public class HandledScreenMixin {
 
-    private static final Identifier SLOT_HIGHLIT = new Identifier("additionz", "textures/gui/slot_highlight.png");
+    private static final Identifier SLOT_HIGHLIT = Identifier.of("additionz", "textures/gui/slot_highlight.png");
 
     @Inject(method = "drawSlotHighlight", at = @At("HEAD"), cancellable = true)
     private static void drawSlotHighlightMixin(DrawContext context, int x, int y, int z, CallbackInfo info) {

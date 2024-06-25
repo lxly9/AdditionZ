@@ -1,7 +1,6 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed creative trinket slot positions
-- Fixed trinket slot backslot compat
-### Changed:
 - 
+### Changed:
+- Updated to mc 1.21

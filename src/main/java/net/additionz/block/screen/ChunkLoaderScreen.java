@@ -20,7 +20,7 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class ChunkLoaderScreen extends HandledScreen<ChunkLoaderScreenHandler> implements ScreenHandlerListener {
 
-    private static final Identifier TEXTURE = new Identifier("additionz:textures/gui/chunk_loader.png");
+    private static final Identifier TEXTURE = Identifier.of("additionz:textures/gui/chunk_loader.png");
     private final ChunkLoaderScreen.ChunkButton[] chunkButtons = new ChunkLoaderScreen.ChunkButton[9];
 
     public ChunkLoaderScreen(ChunkLoaderScreenHandler handler, PlayerInventory inventory, Text title) {

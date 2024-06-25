@@ -26,7 +26,7 @@ import net.minecraft.util.Identifier;
 @Mixin(VillagerEntityRenderer.class)
 public abstract class VillagerEntityRendererMixin extends MobEntityRenderer<VillagerEntity, VillagerResemblingModel<VillagerEntity>> {
 
-    private static final Identifier FEMALE_TEXTURE = new Identifier("textures/entity/villager/female_villager.png");
+    private static final Identifier FEMALE_TEXTURE = Identifier.of("textures/entity/villager/female_villager.png");
 
     public VillagerEntityRendererMixin(Context context, VillagerResemblingModel<VillagerEntity> entityModel, float f) {
         super(context, entityModel, f);

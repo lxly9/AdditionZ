@@ -1,7 +1,7 @@
 package net.additionz.mixin;
 
 import java.util.Iterator;
-import java.util.UUID;
+import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +19,9 @@ import net.additionz.access.AttackTimeAccess;
 import net.additionz.access.PassiveAgeAccess;
 import net.additionz.mixin.accessor.MobEntityAccess;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -36,7 +38,10 @@ import net.minecraft.item.Items;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -48,7 +53,7 @@ public abstract class LivingEntityMixin extends Entity implements AttackTimeAcce
     private int lastAttackedTime;
     private double oldClimbingSpeed = 0D;
 
-    private static final UUID PATH_BOOST_ID = UUID.fromString("1509fe4d-df41-4b81-b9c6-daec1128ea53");
+    private static final Identifier PATH_BOOST_ID = Identifier.of("additionz", "path_speed");
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -76,14 +81,14 @@ public abstract class LivingEntityMixin extends Entity implements AttackTimeAcce
     }
 
     @Inject(method = "applyMovementEffects", at = @At("TAIL"))
-    protected void applyMovementEffectsMixin(BlockPos pos, CallbackInfo info) {
+    protected void applyMovementEffectsMixin(ServerWorld world, BlockPos pos, CallbackInfo info) {
         if (AdditionMain.CONFIG.path_block_speed_boost > 0.00D) {
             EntityAttributeInstance entityAttributeInstance = ((LivingEntity) (Object) this).getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
             if (entityAttributeInstance != null) {
                 if (this.getWorld().getBlockState(this.getVelocityAffectingPos()).isIn(AdditionMain.PATH_BLOCKS)) {
                     if (entityAttributeInstance.getModifier(PATH_BOOST_ID) == null) {
-                        entityAttributeInstance.addTemporaryModifier(
-                                new EntityAttributeModifier(PATH_BOOST_ID, "Path speed boost", (double) AdditionMain.CONFIG.path_block_speed_boost, EntityAttributeModifier.Operation.ADD_VALUE));
+                        entityAttributeInstance
+                                .addTemporaryModifier(new EntityAttributeModifier(PATH_BOOST_ID, (double) AdditionMain.CONFIG.path_block_speed_boost, EntityAttributeModifier.Operation.ADD_VALUE));
                     }
                 } else {
                     if (entityAttributeInstance.getModifier(PATH_BOOST_ID) != null) {
@@ -107,8 +112,13 @@ public abstract class LivingEntityMixin extends Entity implements AttackTimeAcce
             ObjectArrayList<ItemStack> objectArrayList = lootTable.generateLoot(lootContextParameterSet);
 
             float lootingChance = 0.0F;
-            if (causedByPlayer && source.getSource() != null && source.getSource() instanceof LivingEntity && EnchantmentHelper.getLooting((LivingEntity) source.getSource()) > 0) {
-                lootingChance = 0.15F * EnchantmentHelper.getLooting((LivingEntity) source.getSource());
+
+            if (causedByPlayer && source.getSource() != null && source.getSource() instanceof LivingEntity livingEntity) {
+                Optional<RegistryEntry<Enchantment>> optional = livingEntity.getMainHandStack().getEnchantments().getEnchantments().stream()
+                        .filter(entry -> entry.matchesId(Enchantments.LOOTING.getRegistry())).findFirst();
+                if (optional.isPresent() && !optional.isEmpty()) {
+                    lootingChance = 0.15F * EnchantmentHelper.getLevel(optional.get(), livingEntity.getMainHandStack());
+                }
             }
 
             Iterator<ItemStack> listIterator = objectArrayList.iterator();
@@ -148,10 +158,14 @@ public abstract class LivingEntityMixin extends Entity implements AttackTimeAcce
     @ModifyVariable(method = "applyClimbingSpeed", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/lang/Math;max(DD)D", shift = Shift.AFTER), ordinal = 2)
     private double applyClimbingSpeedMixin(double original) {
         if (((LivingEntity) (Object) this).getWorld().isClient() && this.oldClimbingSpeed == original && AdditionMain.CONFIG.dexterity_enchantment
-                && !((LivingEntity) (Object) this).getEquippedStack(EquipmentSlot.FEET).isEmpty()
-                && EnchantmentHelper.getEquipmentLevel(AdditionMain.DEXTERITY_ENCHANTMENT, (LivingEntity) (Object) this) > 0) {
-            double dexterityLevel = (double) EnchantmentHelper.getEquipmentLevel(AdditionMain.DEXTERITY_ENCHANTMENT, (LivingEntity) (Object) this);
-            return original > 0 ? Math.min(original * 1.5D * dexterityLevel, dexterityLevel * 0.1176D) : original * 1.3D * dexterityLevel;
+                && !((LivingEntity) (Object) this).getEquippedStack(EquipmentSlot.FEET).isEmpty()) {
+            Optional<RegistryEntry<Enchantment>> optional = ((LivingEntity) (Object) this).getEquippedStack(EquipmentSlot.FEET).getEnchantments().getEnchantments().stream()
+                    .filter(entry -> entry.matchesId(AdditionMain.DEXTERITY_ENCHANTMENT.getRegistry())).findFirst();
+            if (optional.isPresent() && !optional.isEmpty()) {
+                double dexterityLevel = EnchantmentHelper.getLevel(optional.get(), ((LivingEntity) (Object) this).getEquippedStack(EquipmentSlot.FEET));
+                return original > 0 ? Math.min(original * 1.5D * dexterityLevel, dexterityLevel * 0.1176D) : original * 1.3D * dexterityLevel;
+            }
+
         }
         this.oldClimbingSpeed = original;
         return original;

@@ -90,7 +90,8 @@ public class FletchingScreenHandler extends ScreenHandler {
     }
 
     private boolean canTakeOutput(PlayerEntity player, boolean present) {
-        return this.currentRecipe != null && this.currentRecipe.value().matches(this.input, this.world);
+        return this.currentRecipe != null
+                && this.currentRecipe.value().matches(new FletchingRecipeInput(this.input.getStack(2), this.input.getStack(1), this.input.getStack(0), this.input.getStack(3)), this.world);
     }
 
     private void onTakeOutput(PlayerEntity player, ItemStack stack) {
@@ -110,7 +111,8 @@ public class FletchingScreenHandler extends ScreenHandler {
     }
 
     private void updateResult() {
-        List<RecipeEntry<FletchingRecipe>> list = this.world.getRecipeManager().getAllMatches(AdditionMain.FLETCHING_RECIPE, this.input, this.world);
+        List<RecipeEntry<FletchingRecipe>> list = this.world.getRecipeManager().getAllMatches(AdditionMain.FLETCHING_RECIPE,
+                new FletchingRecipeInput(this.input.getStack(2), this.input.getStack(1), this.input.getStack(0), this.input.getStack(3)), this.world);
 
         if (list.isEmpty()) {
             this.output.setStack(0, ItemStack.EMPTY);
@@ -126,7 +128,9 @@ public class FletchingScreenHandler extends ScreenHandler {
             if (!hasAddition) {
                 this.currentRecipe = list.get(0);
             }
-            ItemStack itemStack = this.currentRecipe.value().craft(this.input, this.world.getRegistryManager());
+            ItemStack itemStack = this.currentRecipe.value().craft(new FletchingRecipeInput(this.input.getStack(2), this.input.getStack(1), this.input.getStack(0), this.input.getStack(3)),
+                    this.world.getRegistryManager());
+
             this.output.setLastRecipe(this.currentRecipe);
             this.output.setStack(0, itemStack);
         }

@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 import net.additionz.AdditionMain;
 import net.minecraft.block.Blocks;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -20,7 +19,7 @@ import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-public class FletchingRecipe implements Recipe<Inventory> {
+public class FletchingRecipe implements Recipe<FletchingRecipeInput> {
 
     private final Ingredient bottom;
     private final Ingredient middle;
@@ -34,24 +33,6 @@ public class FletchingRecipe implements Recipe<Inventory> {
         this.top = top;
         this.addition = addition.isPresent() ? addition : Optional.of(ItemStack.EMPTY);
         this.result = result;
-    }
-
-    @Override
-    public boolean matches(Inventory inventory, World world) {
-        if (this.addition.isPresent() && !this.addition.get().isEmpty() && !ItemStack.areItemsAndComponentsEqual(this.addition.get(), inventory.getStack(3))) {
-            return false;
-        }
-        return this.bottom.test(inventory.getStack(2)) && this.middle.test(inventory.getStack(1)) && this.top.test(inventory.getStack(0));
-    }
-
-    @Override
-    public ItemStack craft(Inventory inventory, WrapperLookup wrapperLookup) {
-        ItemStack itemStack = this.result.copy();
-        if (!inventory.getStack(1).getComponentChanges().isEmpty()) {
-            itemStack = inventory.getStack(1).copyComponentsToNewStack(this.result.getItem(), this.result.getCount());
-            itemStack.applyUnvalidatedChanges(this.result.getComponentChanges());
-        }
-        return itemStack;
     }
 
     @Override
@@ -128,9 +109,9 @@ public class FletchingRecipe implements Recipe<Inventory> {
         }
 
         private static FletchingRecipe read(RegistryByteBuf buf) {
-            Ingredient topIngredient = Ingredient.PACKET_CODEC.decode(buf);
-            Ingredient middleIngredient = Ingredient.PACKET_CODEC.decode(buf);
             Ingredient bottomIngredient = Ingredient.PACKET_CODEC.decode(buf);
+            Ingredient middleIngredient = Ingredient.PACKET_CODEC.decode(buf);
+            Ingredient topIngredient = Ingredient.PACKET_CODEC.decode(buf);
             Optional<ItemStack> additionItemStack = Optional.of(ItemStack.OPTIONAL_PACKET_CODEC.decode(buf));
             ItemStack itemStack = ItemStack.PACKET_CODEC.decode(buf);
             return new FletchingRecipe(bottomIngredient, middleIngredient, topIngredient, additionItemStack, itemStack);
@@ -144,6 +125,25 @@ public class FletchingRecipe implements Recipe<Inventory> {
             ItemStack.PACKET_CODEC.encode(buf, fletchingRecipe.result);
         }
 
+    }
+
+    @Override
+    public boolean matches(FletchingRecipeInput fletchingRecipeInput, World world) {
+        if (this.addition.isPresent() && !this.addition.get().isEmpty() && fletchingRecipeInput.addition() != null
+                && !ItemStack.areItemsAndComponentsEqual(this.addition.get(), fletchingRecipeInput.addition())) {
+            return false;
+        }
+        return this.bottom.test(fletchingRecipeInput.bottom()) && this.middle.test(fletchingRecipeInput.middle()) && this.top.test(fletchingRecipeInput.top());
+    }
+
+    @Override
+    public ItemStack craft(FletchingRecipeInput fletchingRecipeInput, WrapperLookup wrapperLookup) {
+        ItemStack itemStack = this.result.copy();
+        if (fletchingRecipeInput.addition() != null && !fletchingRecipeInput.addition().isEmpty() && !fletchingRecipeInput.addition().getComponentChanges().isEmpty()) {
+            itemStack = fletchingRecipeInput.addition().copyComponentsToNewStack(this.result.getItem(), this.result.getCount());
+            itemStack.applyUnvalidatedChanges(this.result.getComponentChanges());
+        }
+        return itemStack;
     }
 
 }

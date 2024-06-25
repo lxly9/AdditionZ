@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 public class AdditionzEmiPlugin implements EmiPlugin {
 
     public static final EmiStack FLETCHING_TABLE = EmiStack.of(Items.FLETCHING_TABLE);
-    public static final EmiRecipeCategory FLETCHING_CATEGORY = new EmiRecipeCategory(new Identifier("additionz", "fletching"), FLETCHING_TABLE,
+    public static final EmiRecipeCategory FLETCHING_CATEGORY = new EmiRecipeCategory(Identifier.of("additionz", "fletching"), FLETCHING_TABLE,
             new EmiTexture(FletchingScreen.TEXTURE, 13, 166, 16, 16));
 
     @Override

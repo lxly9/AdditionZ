@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.additionz.AdditionMain;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.item.TooltipType;
-import net.minecraft.component.DataComponentType;
+import net.minecraft.component.ComponentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -35,9 +35,9 @@ public class ItemStackMixin {
             if (stack != null && !stack.getComponentChanges().isEmpty()) {
                 list.add(Text.translatable("text.additionz.component"));
 
-                Iterator<Entry<DataComponentType<?>, Optional<?>>> iterator = stack.getComponentChanges().entrySet().iterator();
+                Iterator<Entry<ComponentType<?>, Optional<?>>> iterator = stack.getComponentChanges().entrySet().iterator();
                 while (iterator.hasNext()) {
-                    Entry<DataComponentType<?>, Optional<?>> entry = iterator.next();
+                    Entry<ComponentType<?>, Optional<?>> entry = iterator.next();
                     if (!entry.getValue().isPresent()) {
                         continue;
                     }

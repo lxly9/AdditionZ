@@ -17,7 +17,8 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class VillagerEntitySleepingFeatureRenderer extends FeatureRenderer<VillagerEntity, VillagerResemblingModel<VillagerEntity>> {
-    private static final RenderLayer EYE_LAYER = RenderLayer.getEntityCutoutNoCull(new Identifier("additionz", "textures/entity/sleeping_villager_eyes.png"));
+
+    private static final RenderLayer EYE_LAYER = RenderLayer.getEntityCutoutNoCull(Identifier.of("additionz", "textures/entity/sleeping_villager_eyes.png"));
 
     public VillagerEntitySleepingFeatureRenderer(FeatureRendererContext<VillagerEntity, VillagerResemblingModel<VillagerEntity>> featureRendererContext) {
         super(featureRendererContext);
@@ -28,7 +29,7 @@ public class VillagerEntitySleepingFeatureRenderer extends FeatureRenderer<Villa
         if (villagerEntity.isSleeping()) {
             VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(EYE_LAYER);
             RenderSystem.enableBlend();
-            this.getContextModel().render(matrixStack, vertexConsumer, 15728640, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.getContextModel().render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 15728640);
             RenderSystem.disableBlend();
         }
     }
