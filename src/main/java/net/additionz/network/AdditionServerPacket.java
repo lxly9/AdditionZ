@@ -29,7 +29,7 @@ public class AdditionServerPacket {
             int entityId = payload.entityId();
             int enchantmentLevel = payload.enchantmentLevel();
             boolean offhand = payload.offhand();
-            context.player().server.execute(() -> {
+                context.server().execute(() -> {
                 context.player().getWorld().getEntityById(entityId).damage(context.player().getDamageSources().playerAttack(context.player()), (float) enchantmentLevel * 2.0F);
                 ((LivingEntity) context.player().getWorld().getEntityById(entityId)).takeKnockback((float) enchantmentLevel * 0.5f,
                         MathHelper.sin(context.player().getYaw() * ((float) Math.PI / 180)), -MathHelper.cos(context.player().getYaw() * ((float) Math.PI / 180)));
@@ -44,7 +44,7 @@ public class AdditionServerPacket {
         });
         ServerPlayNetworking.registerGlobalReceiver(ExperiencePacket.PACKET_ID, (payload, context) -> {
             int amount = payload.amount();
-            context.player().server.execute(() -> {
+                context.server().execute(() -> {
                 if (!context.player().isCreative()) {
                     context.player().addExperience(-amount);
                 }
